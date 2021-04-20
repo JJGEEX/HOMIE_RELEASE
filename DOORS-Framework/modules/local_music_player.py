@@ -135,11 +135,12 @@ def sendToFront(songName, info):
 
     # Connect the socket to the port where the server is listening
     server_address = (ip, port)
-    try:
-        sock.connect(server_address)
-    except:
-        print("connection to {} port {} refused. Can't send song".format(ip,port))
-        return
+    while True:
+        try:
+            sock.connect(server_address)
+            break
+        except:
+            print("connection to {} port {} refused. Can't send song".format(ip,port))
     print ('connecting to %s port %s' % server_address)
     size = 1
     while size > 0:
@@ -155,12 +156,24 @@ def sendToFront(songName, info):
             except socket.error as ex:
                 print("something went wrong with connection to {} port {}".format(ip,port))
                 print("ERROR: {}".format(ex))
-                f.close()
-                return
+                while True:
+                    try:
+                        sock.connect(server_address)
+                        break
+                    except:
+                        print("connection to {} port {} refused. Can't send song".format(ip,port))
+                print ('connecting to %s port %s' % server_address)
+                continue
+    sock.settimeout(5)
     while True:
-        data = sock.recv(SIZE)
-        if b"ADONE" in data:
-            break
+        try:
+            data = sock.recv(SIZE)
+            if b"ADONE" in data:
+                break
+        except:
+            print("connection timed out in local music connection receive")
+            f.close()
+            return
     print("RECEIVED ADONE FOR LOCAL MUSIC PLAYER") 
     sock.close()
     f.close()

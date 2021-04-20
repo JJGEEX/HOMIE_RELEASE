@@ -25,10 +25,8 @@ class VoiceSynth:
         def sendToFront(self, sentence): #still working on this
                 fName = "./temp/voice.wav"
                 temp = "./temp/vTemp.wav"
-                cleanup = [
-                        "rm "+fName,
-                    ]
                 comms = [
+                        "rm "+fName,
                         "espeak -w "+temp+" -s 130 \""+sentence+"\"",  #converting msg to voice synth .wav file
                         "ffmpeg -i "+temp+" -ar 16000 "+fName, #downsampling .wav file for front-end
                         "rm "+temp, #removing the temp file
@@ -38,11 +36,6 @@ class VoiceSynth:
                 if self.enabled == False:
                         print("voice synth not on. Will not send audio to front end")
                         return
-                for i in cleanup:
-                    try:
-                        system(i)
-                    except:
-                        continue
                 for i in comms:
                     try:
                         system(i)
@@ -74,15 +67,25 @@ class VoiceSynth:
                         size = len(read)
                         try:
                                 sock.sendall(read)
+                        except KeyboardInterrupt:
+                                print("received keyboard itnerrupt in voice synth send")
+                                f.close()
+                                sock.close()
+                                return
                         except BrokenPipeError:
                                 print("connection to IP {} PORT {} died".format(self.ip, self.port))
-                                break
                                 f.close()
                                 return
+                sock.settimeout(5)
                 while True:
-                        data = sock.recv(SIZE)
-                        if b"ADONE" in data:
-                            break
+                        try:
+                                data = sock.recv(SIZE)
+                                if b"ADONE" in data:
+                                        break
+                        except:
+                                print("connection timed out for voice synth receive")
+                                f.close()
+                                return
                 print("ADONE RECEIVED FOR VOICE SYNTH") 
                 f.close()
                 sock.close()
