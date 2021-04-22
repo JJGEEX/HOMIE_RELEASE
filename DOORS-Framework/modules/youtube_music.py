@@ -104,6 +104,9 @@ def commands():
                 "using you tube look for the song {}",
                 "using you tube play {}",
                 "using you to play {}",
+                "using you tube and play the song {}",
+                "using youtube and play the song {}",
+                "using you to and play the song {}",
             ]
             ]
     classify = [

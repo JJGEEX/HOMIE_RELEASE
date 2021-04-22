@@ -1,3 +1,5 @@
+import local_music_player as lmp
+
 def command_handler(sentence, info):
     msg = sentence+" is not a known command"
     func = None
@@ -5,6 +7,9 @@ def command_handler(sentence, info):
 
     if sentence in comms[0]:
         msg = "no one will ever know"
+    if sentence in comms[1]:
+        msg, func = lmp.playSong("sheesh frog", info)
+        msg = ""
     return msg, func
 
 def commands():
@@ -27,9 +32,18 @@ def commands():
                 "who is jj bigs",
                 "who is jay jay bigs",
             ],
+            [
+                "this is bustin",
+                "this is bussing",
+                "this is bus in",
+                "this is bust in",
+                "this is busting",
+                "this is boston"
+            ],
         ]
 
     ident = [
             "cosine",
+            "cosine"
         ]
     return comms, ident

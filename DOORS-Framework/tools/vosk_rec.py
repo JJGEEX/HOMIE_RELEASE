@@ -87,7 +87,6 @@ class Decoder:
 
                                     except:
                                             print("timed out from connection and didn't get YEETO")
-                                            print("exception: {}".format(sys.exc_info[0]))
                                             connDied = True
                                             break
                                 if connDied:
@@ -95,14 +94,12 @@ class Decoder:
                                 s.settimeout(None)
                                 s.sendall(b"FLUSH\0") #letting front know bad data has been flushed
                                 FTOT, FTEMP = self.init_temp_tot_wave() #init FTOT and FTEMP files
-                                s.settimeout(5)
                                 while True:
                                         temp = self.open_temp_wave(FTEMP) #get temorary wave file
                                         try:
                                                 data = s.recv(CHUNK)
                                         except:
                                                 print("connection with {} {} died".format(HOST, PORT))
-                                                print("exception: {}".format(sys.exc_info[0]))
                                                 connDied = True
                                                 break
                                         size = len(data)
