@@ -104,6 +104,9 @@ def commands():
                 "using you tube look for the song {}",
                 "using you tube play {}",
                 "using you to play {}",
+                "using you tube and play the song {}",
+                "using youtube and play the song {}",
+                "using you to and play the song {}",
             ]
             ]
     classify = [
@@ -159,11 +162,12 @@ def sendToFront(info):
 
     # Connect the socket to the port where the server is listening
     server_address = (ip, port)
-    try:
-        sock.connect(server_address)
-    except:
-        print("connection to {} port {} refused. Can't send song".format(ip, port))
-        return
+    while True:
+        try:
+            sock.connect(server_address)
+            break
+        except:
+            print("connection to {} port {} refused. Can't send song".format(ip, port))
     print ('connected to {} port {}'.format(ip, port))
     size = 1
     while size > 0:
@@ -180,12 +184,24 @@ def sendToFront(info):
             except socket.error as ex:
                     print("something went wrong with connection to {} port {}".format(ip,port))
                     print("ERROR: {}".format(ex))
-                    f.close()
-                    return
+                    while True:
+                            try:
+                                sock.connect(server_address)
+                                break
+                            except:
+                                print("connection to {} port {} refused. Can't send song".format(ip, port))
+                    print ('connected to {} port {}'.format(ip, port))
+                    continue
+    sock.settimeout(5)
     while True:
-        data = sock.recv(SIZE)
-        if b"ADONE" in data:
-            break
+        try:
+                data = sock.recv(SIZE)
+                if b"ADONE" in data:
+                        break
+        except:
+                print("connection timed out on youtube music receive")
+                f.close()
+                return
     print("RECEIVED ADONE FOR YOUTUBE MUSIC")
     f.close()
     sock.close()

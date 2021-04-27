@@ -69,8 +69,8 @@ class Decoder:
 
                                 ret = self.try_connection(HOST, PORT, s, "send CNRDY")
                                 if ret == False:
-                                    s.close()
-                                    continue
+                                        s.close()
+                                        continue
                                 print("connected")
                                 s.sendall(b"CNRDY\0") #sending connection ready 
                                 data = b""
@@ -80,23 +80,28 @@ class Decoder:
                                             data = s.recv(CHUNK)
                                             print("bad data : {}".format(len(data)))
                                             if len(data) == 0:
-                                                print("conn died during handshake")
-                                                time.sleep(2)
-                                                connDied = True
-                                                break
+                                                    print("conn died during handshake")
+                                                    time.sleep(2)
+                                                    connDied = True
+                                                    break
 
                                     except:
                                             print("timed out from connection and didn't get YEETO")
                                             connDied = True
                                             break
                                 if connDied:
-                                    continue
+                                        continue
                                 s.settimeout(None)
                                 s.sendall(b"FLUSH\0") #letting front know bad data has been flushed
                                 FTOT, FTEMP = self.init_temp_tot_wave() #init FTOT and FTEMP files
                                 while True:
                                         temp = self.open_temp_wave(FTEMP) #get temorary wave file
-                                        data = s.recv(CHUNK)
+                                        try:
+                                                data = s.recv(CHUNK)
+                                        except:
+                                                print("connection with {} {} died".format(HOST, PORT))
+                                                connDied = True
+                                                break
                                         size = len(data)
                                         totData += size
                                         if data == None or size == 0:#check for when we 
@@ -107,10 +112,13 @@ class Decoder:
                                         print(f"got data: {len(data)}")
                                         temp.writeframesraw(data)
                                         temp.close()
-                                        self.combine_files([FTOT, FTEMP]) #combining wave file data
-                                        if(self.detect_silence(FTOT)): #2 seconds of silence detected
+                                        self.combine_files([FTOT, FTEMP]) 
+                                        #combining wave file data
+                                        if(self.detect_silence(FTOT)): 
+                                                #2 seconds of silence detected
                                                 break
-
+                                if connDied:
+                                        break   
                         try:
                                 s.close()
                                 print(f"BACK CLOSE tot data received : {totData}")

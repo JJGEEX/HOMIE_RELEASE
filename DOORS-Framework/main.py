@@ -60,14 +60,14 @@ def main():
                     if "no match for" in msg:
                         send_error(info)
                         continue
-                    run_results(msg, func, mod, classes, voice, info)
+                    run_results(msg, func, mod, classes, voice)
             elif record == "reuse": #reuse previous recording
                 sentence = decoder.decode_file(filename)
             else:
                 print("that shouldn't have happened: "+record)
                 exit()
             print("vosk sentence: "+sentence)
-            run_results(msg, func, mod, classes, voice, info)
+            run_results(msg, func, mod, classes, voice)
         elif(record == "test"):
             run_tests(decoder, voice, classes)
         else:
