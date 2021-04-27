@@ -1,0 +1,16 @@
+Homie AI Generation
+
+These python scripts allow you to generate a custom wake word or to train Homie to better suit a voice.
+
+1. First you must gather recordings using the files in the recordings folder.
+		-Homie recording is a script used to gather 1 second samples of the wake word
+		-Normalize goes through and makes the recording volume the same as the rest of the dataset
+		
+2. Next you must generate the neural Network. 
+		-setup is run first, this converts the files in voice commands into an 8x8 np array of Mel Frequency Cepstral Coefficients (MFCCs) used to train the neural network and stores this in all_targets_mfcc_sets.npz
+		-train then uses this data and makes a neural network stored in wake_word_stop_model.h5
+		-tfliteconverter then converts this to a tensor flow lite model which can be used in the firmware.
+		
+3. Testing can then be done by moving the wake_word_stop_model.tflite to the testing folder and then running Mic_Stream_wake_word.py this will use the computer microphone and slowly stream the probability the audio is the wake word. note this only takes samples every 1/2 second since python audio libraries are not the most efficent and cant process every 1/8th of a second, so the model will be better on the firmware.
+
+4.Once you have your tensorflow lite model, create a new project in stm cube. open the ioc file to launch thier project configurer. Then in the top center of the screen go to Software Packs->manage compnents and install X CUBE AI. Then on the bottom left click software packs-> X Cube AI, then add network and find the tensorflow lite model you want to add. Click Analyse and then save, the project will then be configured with a X-CUBE-AI folder. in the App subfolder copy all the network.c/h an network_data.c/h files (not the app_x-cube-ai.c/h) into the homie project. The new wake word network is now on Homie
