@@ -1,0 +1,3 @@
+Layer Pairs Export File for PCB: C:\Users\jonas\Documents\GitHub\Hardware\Altium\POCboard_JJGEEX\PCB3.PcbDoc
+LayersSetName=Top_Bot_Thru_Holes|DrillFile=pcb3.txt|DrillLayers=gtl,g1,g2,gbl
+LayersSetName=Top_Bot_Rect_Holes|DrillFile=pcb3-rectholes.txt|DrillLayers=gtl,g1,g2,gbl

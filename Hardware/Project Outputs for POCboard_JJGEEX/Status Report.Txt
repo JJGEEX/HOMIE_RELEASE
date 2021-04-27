@@ -1,0 +1,10 @@
+Output: Generates pick and place files
+Type  : Pick Place
+From  : Variant [[No Variations]] of Project [POCboard_JJGEEX.PrjPcb]
+   Generated File[Pick Place for PCB3.csv]
+
+
+Files Generated   : 1
+Documents Printed : 0
+
+Finished Output Generation At 3:00:28 PM On 1/31/2021
